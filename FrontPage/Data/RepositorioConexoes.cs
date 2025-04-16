@@ -1,7 +1,6 @@
 ﻿using FrontPage.Models;
 using Microsoft.Data.Sqlite;
 using MySql.Data.MySqlClient;
-using System.Data.SqlClient;
 using System.IO;
 using System.Windows;
 
@@ -11,10 +10,13 @@ namespace FrontPage.Data
     {
         private readonly string connectionString =
             $"Data Source={Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "conexoes.sqlite")}";
+
         public RepositorioConexoes()
         {
             CriarTabelaSeNaoExistir();
         }
+
+        #region Criar a Tabela Conexoes
 
         private void CriarTabelaSeNaoExistir()
         {
@@ -37,6 +39,10 @@ namespace FrontPage.Data
 
             command.ExecuteNonQuery();
         }
+
+        #endregion Criar a Tabela Conexoes
+
+        #region medoto para salvar conexao
 
         public void SalvarConexao(Conexao conexao)
         {
@@ -66,6 +72,10 @@ namespace FrontPage.Data
             cmd.ExecuteNonQuery();
         }
 
+        #endregion medoto para salvar conexao
+
+        #region metodo para testar conexao
+
         public void TestarConexao(Conexao conexao, string txtTestConnection)
         {
             try
@@ -73,18 +83,16 @@ namespace FrontPage.Data
                 string connectionString = "";
                 connectionString = txtTestConnection;
                 using var connection = new MySqlConnection(connectionString);
-                    try
-                    {
-                        connection.Open();
-                        MessageBox.Show("Conexão bem-sucedida com o MySQL!");
-                        
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Erro ao conectar com o MySQL:\n{ex.Message}");
-                    }
+                try
+                {
+                    connection.Open();
+                    MessageBox.Show("Conexão bem-sucedida com o MySQL!");
                 }
-
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Erro ao conectar com o MySQL:\n{ex.Message}");
+                }
+            }
             catch (MySqlException ex)
             {
                 string mensagem = "";
@@ -94,15 +102,19 @@ namespace FrontPage.Data
                     case 0:
                         mensagem = "Não foi possível conectar ao servidor.";
                         break;
+
                     case 1045:
                         mensagem = "Usuário ou senha inválidos.";
                         break;
+
                     case 1042:
                         mensagem = "Servidor não encontrado ou não acessível.";
                         break;
+
                     case 1049:
                         mensagem = "Banco de dados não existe.";
                         break;
+
                     default:
                         mensagem = $"Erro {ex.Number}: {ex.Message}";
                         break;
@@ -117,6 +129,11 @@ namespace FrontPage.Data
                               MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        #endregion metodo para testar conexao
+
+        #region metodo para listar conexoes
+
         public List<Conexao> ListarConexoes()
         {
             var lista = new List<Conexao>();
@@ -132,6 +149,7 @@ namespace FrontPage.Data
             {
                 lista.Add(new Conexao
                 {
+                    Id = reader.GetInt32(0),
                     Nome = reader["Nome"].ToString(),
                     Servidor = reader["Servidor"].ToString(),
                     Banco = reader["Banco"].ToString(),
@@ -144,5 +162,72 @@ namespace FrontPage.Data
 
             return lista;
         }
+
+        #endregion metodo para listar conexoes
+
+        #region metodo para excluir conexao
+
+        public void ExcluirConexao(int id)
+        {
+            using var connection = new SqliteConnection(connectionString);
+            connection.Open();
+            var cmd = connection.CreateCommand();
+            cmd.CommandText = "DELETE FROM Conexoes WHERE Id = $id";
+            cmd.Parameters.AddWithValue("$id", id);
+            cmd.ExecuteNonQuery();
+        }
+
+        public void EditarConexao(Conexao conexao)
+        {
+            using var connection = new SqliteConnection(connectionString);
+            connection.Open();
+            var cmd = connection.CreateCommand();
+            cmd.CommandText = @"
+                UPDATE Conexoes
+                SET Nome = $nome, Servidor = $servidor, Banco = $banco, Porta = $porta, Usuario = $usuario, Senha = $senha, Tipo = $tipo
+                WHERE Id = $id;
+            ";
+            cmd.Parameters.AddWithValue("$id", conexao.Id);
+            cmd.Parameters.AddWithValue("$nome", conexao.Nome);
+            cmd.Parameters.AddWithValue("$servidor", conexao.Servidor);
+            cmd.Parameters.AddWithValue("$banco", conexao.Banco);
+            cmd.Parameters.AddWithValue("$porta", conexao.Porta);
+            cmd.Parameters.AddWithValue("$usuario", conexao.Usuario);
+            cmd.Parameters.AddWithValue("$senha", conexao.Senha);
+            cmd.Parameters.AddWithValue("$tipo", conexao.Tipo);
+            cmd.ExecuteNonQuery();
+        }
+
+        #endregion metodo para excluir conexao
+
+        #region metodo para executar dumps
+
+        public void ExecutarDumps(IEnumerable<string> arquivos, Conexao conexao, StreamWriter logWriter)
+        {
+            string connStr = $"Server={conexao.Servidor};Port={conexao.Porta};Database={conexao.Banco};Uid={conexao.Usuario};Pwd={conexao.Senha};";
+
+            using var connection = new MySqlConnection(connStr);
+            connection.Open();
+
+            foreach (var caminhoArquivo in arquivos)
+            {
+                string nomeArquivo = Path.GetFileName(caminhoArquivo);
+
+                try
+                {
+                    string script = File.ReadAllText(caminhoArquivo);
+                    using var cmd = new MySqlCommand(script, connection);
+                    cmd.ExecuteNonQuery();
+                    logWriter.WriteLine($"[SUCESSO] {nomeArquivo} executado");
+                }
+                catch (Exception ex)
+                {
+                    logWriter.WriteLine($"[ERRO] {nomeArquivo} - {ex.Message}");
+                    // Continua para o próximo arquivo
+                }
+            }
+        }
+
+        #endregion metodo para executar dumps
     }
 }

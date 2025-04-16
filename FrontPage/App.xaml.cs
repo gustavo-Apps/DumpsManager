@@ -1,6 +1,4 @@
 ﻿using SQLitePCL;
-using System.Configuration;
-using System.Data;
 using System.Windows;
 
 namespace FrontPage
@@ -16,5 +14,4 @@ namespace FrontPage
             InitializeComponent();
         }
     }
-
 }

@@ -1,30 +1,51 @@
 ﻿<UserControl x:Class="FrontPage.Pages.ListaConexoes"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Height="Auto" Width="Auto">
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Height="Auto" Width="Auto">
+
+    <UserControl.Resources>
+        <Style x:Key="CenteredCellStyle" TargetType="TextBlock">
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="TextAlignment" Value="Center" />
+        </Style>
+    </UserControl.Resources>
 
     <Grid Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="200"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="200" />
         </Grid.RowDefinitions>
 
-        <TextBlock Text="Conexões Salvas" FontWeight="Bold" FontSize="16"/>
+        <TextBlock Text="Conexões Salvas" FontWeight="Bold" FontSize="16" />
 
         <DataGrid x:Name="dgConexoes" Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False" Margin="0,10,0,10">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Nome" Binding="{Binding Nome}" Width="*"/>
-                <DataGridTextColumn Header="Servidor" Binding="{Binding Servidor}" Width="*"/>
-                <DataGridTextColumn Header="Banco" Binding="{Binding Banco}" Width="*"/>
-                <DataGridTextColumn Header="Porta" Binding="{Binding Porta}" Width="*"/>
-                <DataGridTextColumn Header="Tipo" Binding="{Binding Tipo}" Width="Auto"/>
+                <!-- Checkbox de seleção -->
+                <DataGridTemplateColumn Header="Selecionar" Width="Auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding Selecionado,  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <!-- Colunas de dados -->
+                <DataGridTextColumn Header="Nome" Binding="{Binding Nome}" Width="*" ElementStyle="{StaticResource CenteredCellStyle}" />
+                <DataGridTextColumn Header="Servidor" Binding="{Binding Servidor}" Width="*" ElementStyle="{StaticResource CenteredCellStyle}" />
+                <DataGridTextColumn Header="Banco" Binding="{Binding Banco}" Width="*" ElementStyle="{StaticResource CenteredCellStyle}" />
+                <DataGridTextColumn Header="Porta" Binding="{Binding Porta}" Width="*" ElementStyle="{StaticResource CenteredCellStyle}" />
+                <DataGridTextColumn Header="Tipo" Binding="{Binding Tipo}" Width="Auto" ElementStyle="{StaticResource CenteredCellStyle}" />
+
+                <!-- Ações -->
                 <DataGridTemplateColumn Header="Ações">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <Button Content="Executar" Click="ExecutarConexao_Click" Margin="2"/>
                                 <Button Content="Editar" Click="EditarConexao_Click" Margin="2" />
+                                <Button Content="Excluir" Click="ExcluirConexao_Click" Margin="2" />
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -32,13 +53,22 @@
             </DataGrid.Columns>
         </DataGrid>
 
+        <!-- Dumps -->
         <StackPanel Grid.Row="2">
-            <TextBlock Text="Arquivos .sql" FontWeight="Bold" FontSize="16"/>
-            <ListBox x:Name="lbDumps" Height="120" Margin="0,5"/>
+            <TextBlock Text="Arquivos .sql" FontWeight="Bold" FontSize="16" />
+            <ListBox x:Name="lbDumps" Height="120" Margin="0,5" SelectionMode="Extended" />
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,0,0">
-                <Button Content="Carregar Dumps" Click="CarregarDumps_Click" Width="120" Margin="5"/>
-                <Button Content="Executar Dump" Click="ExecutarDump_Click" Width="120" Margin="5"/>
+                <Button Content="Carregar Dumps" Click="CarregarDumps_Click" Width="120" Margin="5" />
+                <Button Content="Executar Dumps" Click="ExecutarDump_Click" Width="120" Margin="5" />
             </StackPanel>
         </StackPanel>
+
+        <!-- Link para o logPah -->
+        <TextBlock Name="txtLogContainer" Margin="5" Visibility="Collapsed">
+    <Run Text="Log da execução salvo em: " />
+    <Hyperlink Name="lnkLogPath" Click="lnkLogPath_Click">
+        <Run Name="txtLogPath" />
+    </Hyperlink>
+        </TextBlock>
     </Grid>
 </UserControl>

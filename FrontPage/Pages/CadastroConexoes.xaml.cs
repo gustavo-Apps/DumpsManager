@@ -1,11 +1,8 @@
-﻿using System.IO;
+﻿using FrontPage.Data;
+using FrontPage.Models;
+using MySql.Data.MySqlClient;
 using System.Windows;
 using System.Windows.Controls;
-using FrontPage.Data;
-using FrontPage.Models;
-using Microsoft.Data.Sqlite;
-using MySql.Data.MySqlClient;
-using SQLitePCL;
 
 namespace FrontPage.Pages
 {
@@ -14,9 +11,12 @@ namespace FrontPage.Pages
         private readonly RepositorioConexoes repositorio = new();
 
         public string? connectionString { get; }
+
         public CadastroConexoes()
         {
             InitializeComponent();
+            txtPorta.Text = "3306";       // Porta padrão
+            cbTipo.SelectedIndex = 0;
         }
 
         public void btnSalvarConexao_Click(object sender, RoutedEventArgs e)
@@ -29,7 +29,7 @@ namespace FrontPage.Pages
                 Porta = txtPorta.Text,
                 Usuario = txtUsuario.Text,
                 Senha = txtSenha.Password,
-                Tipo = Tipo.Text,
+                Tipo = cbTipo.Text,
             };
             if (txtNome.Text == string.Empty || txtServidor.Text == string.Empty || txtBanco.Text == string.Empty || txtUsuario.Text == string.Empty)
             {
@@ -56,10 +56,10 @@ namespace FrontPage.Pages
                 Porta = txtPorta.Text,
                 Usuario = txtUsuario.Text,
                 Senha = txtSenha.Password,
-                Tipo = Tipo.Text,
+                Tipo = cbTipo.Text,
             };
             string porta = string.IsNullOrWhiteSpace(txtPorta.Text) ? "3306" : txtPorta.Text;
-            string tipo = string.IsNullOrWhiteSpace(Tipo.Text) ? "mariadb" : Tipo.Text;
+            string tipo = string.IsNullOrWhiteSpace(cbTipo.Text) ? "mariadb" : cbTipo.Text;
             string connStr = $"Server={txtServidor.Text};Port={txtPorta.Text};Database={txtBanco.Text};Uid={txtUsuario.Text};Pwd={txtSenha.Password};";
 
             try
@@ -82,7 +82,6 @@ namespace FrontPage.Pages
             {
                 MessageBox.Show($"Erro ao conectar com o MySQL:\n{ex.Message}");
             }
-
         }
     }
 }

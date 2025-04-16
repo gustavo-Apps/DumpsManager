@@ -1,14 +1,18 @@
-﻿<UserControl x:Class="FrontPage.Pages.CadastroConexoes"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Height="Auto" Width="Auto">
+﻿<UserControl x:Class="FrontPage.Pages.EditarConexoes"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:FrontPage.Pages"
+      mc:Ignorable="d"
+      Height="auto" Width="auto">
+
     <Grid Margin="10">
         <StackPanel>
-            <TextBlock FontSize="24" FontWeight="Bold" Margin="0,0,0,10" TextAlignment="Left">Cadastro de Conexões</TextBlock>
+            <TextBlock FontSize="24" FontWeight="Bold" Margin="0,0,0,10" TextAlignment="Left">Editor de Conexões</TextBlock>
             <TextBlock Margin="0,0,0,5" Text="Nome (como será salvo):" />
-            <TextBox Margin="0" Name="txtNome" Text="" Height="20" />
+            <TextBox Margin ="0" x:Name="txtNome" />
             <TextBlock Text="Servidor" Margin="0,0,0,5" />
-
             <ComboBox Margin="0" x:Name="txtServidor" IsEditable="True">
                 <ComboBoxItem Content="--- Locais ---" IsEnabled="False" Foreground="Gray" />
                 <ComboBoxItem Content="127.0.0.1" />
@@ -22,13 +26,11 @@
                 <ComboBoxItem Content="srv553792.hstgr.cloud" />
                 <ComboBoxItem Content="127.0.0.1" />
             </ComboBox>
-
             <TextBlock Margin="0" Text="Usuario:" />
             <TextBox Margin="1" Name="txtUsuario" Text="" Height="20" />
             <TextBlock Margin="0" Text="Nome do Banco:" />
             <TextBox Margin="1" Name="txtBanco" Text="" Height="20" />
             <TextBlock Margin="0" Text="Porta:" />
-
             <ComboBox x:Name="txtPorta" IsEditable="True">
                 <ComboBoxItem Content="3306" />
                 <ComboBoxItem Content="3307" />
@@ -37,7 +39,6 @@
                 <ComboBoxItem Content="3306" />
                 <ComboBoxItem Content="3320" />
             </ComboBox>
-
             <TextBlock Margin="0" Text="Senha:" />
             <PasswordBox Margin="1" Name="txtSenha" Height="20" />
             <TextBlock Margin="0" Text="Tipo de Conexão(MariaDB, Mysql...):" />
@@ -48,11 +49,11 @@
                 <ComboBoxItem Content="PostgreSQL" />
             </ComboBox>
 
-            <!-- Container para os botões centralizados -->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10">
-                    <Button Content="Testar Conexão" Click="btnTestarConexao_Click" Width="150" Margin="0,0,5,0" />
-                    <Button Content="Salvar" Click="btnSalvarConexao_Click" Width="150" Margin="5,0,0,0" />
+                    <Button Content="Salvar Conexão" Click="btnSalvar_Click" Width="150" Margin="0,0,10,0" />
+                    <Button Content="Testar Conexão" Click="btnTestar_Click" Width="150" Margin="0,0,5,0" />
+                    <Button Content="Voltar" Click="btnCancelar_Click" Width="150" Margin="5,0,0,0" />
                 </StackPanel>
             </StackPanel>
         </StackPanel>

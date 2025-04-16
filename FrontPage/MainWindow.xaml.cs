@@ -1,6 +1,7 @@
-﻿using System.Windows;
-using FrontPage.Data;
+﻿using FrontPage.Data;
 using FrontPage.Pages;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace FrontPage
 {
@@ -14,9 +15,10 @@ namespace FrontPage
             InitializeComponent();
         }
 
+        public ContentControl MainContentControl => MainContent;
+
         private void BtnConexoes_Click(object sender, RoutedEventArgs e)
         {
-
             MainContent.Content = new ListaConexoes(); // insere a tela dentro do painel da direita
             //var janela = new FrontPage.Pages.ListaConexoes(); // namespace + nome da janela
             //janela.Show(); // Mostra a janela        }

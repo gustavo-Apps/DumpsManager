@@ -26,7 +26,7 @@ namespace FrontPage.FrmLayout
             obj.SetValue(TextProperty, value);
         }
 
-        #endregion
+        #endregion Propriedade Anexada para Texto do Placeholder
 
         #region Comportamento do Placeholder
 
@@ -99,6 +99,6 @@ namespace FrontPage.FrmLayout
             }
         }
 
-        #endregion
+        #endregion Comportamento do Placeholder
     }
 }
