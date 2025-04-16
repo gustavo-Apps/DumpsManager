@@ -1,0 +1,36 @@
+﻿using System.Windows;
+using FrontPage.Data;
+using FrontPage.Pages;
+
+namespace FrontPage
+{
+    public partial class MainWindow : Window
+    {
+        private readonly RepositorioConexoes repositorio = new();
+        public string? connectionString { get; }
+
+        public MainWindow()
+        {
+            InitializeComponent();
+        }
+
+        private void BtnConexoes_Click(object sender, RoutedEventArgs e)
+        {
+
+            MainContent.Content = new ListaConexoes(); // insere a tela dentro do painel da direita
+            //var janela = new FrontPage.Pages.ListaConexoes(); // namespace + nome da janela
+            //janela.Show(); // Mostra a janela        }
+        }
+
+        private void BtnDumps_Click(object sender, RoutedEventArgs e)
+        {
+            // Exemplo: criar outra página depois
+            MessageBox.Show("Página de dumps em construção!");
+        }
+
+        private void BtnCadastrar_Click(object sender, RoutedEventArgs e)
+        {
+            MainContent.Content = new CadastroConexoes(); // insere a tela dentro do painel da direita
+        }
+    }
+}
