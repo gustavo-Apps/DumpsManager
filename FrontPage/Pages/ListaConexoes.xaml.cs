@@ -1,9 +1,11 @@
 ﻿using FrontPage.Data;
 using FrontPage.Models;
 using Microsoft.Win32;
+using MySql.Data.MySqlClient;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection.Metadata;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -50,54 +52,68 @@ namespace FrontPage.Pages
             }
         }
 
-        private void ExecutarDump_Click(object sender, RoutedEventArgs e)
+        private async void ExecutarDump_Click(object sender, RoutedEventArgs e)
         {
-            var conexoesSelecionadas = conexoes.Where(c => c.Selecionado).ToList();
+            btnExecutarDumps.IsEnabled = false;
+            logProgressBar.Visibility = Visibility.Visible;
 
-            if (conexoesSelecionadas.Count == 0)
+            try
             {
-                MessageBox.Show("Nenhuma conexão selecionada para executar os dumps.");
-                return;
-            }
+                var conexoesSelecionadas = conexoes.Where(c => c.Selecionado).ToList();
+                var arquivos = lbDumps.Items.Cast<string>().ToList();
 
-            if (arquivosDumps.Count < 1)
-            {
-                MessageBox.Show("Nenhum dump adicionado.");
-                return;
-            }
+                if (!ValidarExecucao(conexoesSelecionadas, arquivos))
+                    return;
 
-            // Cria um log único para todas as execuções
-            _ultimoLogPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-                                        $"execucao_dumps_{DateTime.Now:yyyyMMdd_HHmmss}.txt");
+                string logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"dump_log_{DateTime.Now:yyyyMMdd_HHmmss}.txt");
 
-            using (var logWriter = new StreamWriter(_ultimoLogPath, append: true))
-            {
-                logWriter.WriteLine($"=== Execução iniciada: {DateTime.Now} ===");
-
-                var dumps = lbDumps.Items.Cast<string>();
+                using var logWriter = new StreamWriter(logPath, append: true);
+                int total = conexoesSelecionadas.Count;
+                int atual = 0;
 
                 foreach (var conexao in conexoesSelecionadas)
                 {
-                    logWriter.WriteLine($"\n--- Executando na conexão: {conexao.Nome} ---");
+                    atual++;
+                    AtualizarProgresso(conexao.Nome, atual, total);
+
                     try
                     {
-                        repositorio.ExecutarDumps(dumps, conexao, logWriter);
-                        logWriter.WriteLine($"[SUCESSO] Todos os dumps executados na conexão {conexao.Nome}");
+                        await Task.Run(() =>
+                        {
+                            repositorio.ExecutarDumps(arquivos, conexao, logWriter, AddLog);
+                            // Abrir a nova janela de execução
+                        });
                     }
                     catch (Exception ex)
                     {
-                        logWriter.WriteLine($"[ERRO] Falha na conexão {conexao.Nome}: {ex.Message}");
+                        AddLog($"[ERRO GRAVE] {ex.Message}");
+                        logWriter.WriteLine($"[ERRO GRAVE] {ex}");
                     }
                 }
-
-                logWriter.WriteLine($"\n=== Execução finalizada: {DateTime.Now} ===");
+                var executarDumpWindow = new ExecutarDump(conexoesSelecionadas, arquivos); // Swap parameter order
+                executarDumpWindow.Show(); // Abre a janela de forma independente
             }
+            finally
+            {
+                MessageBox.Show("Execução concluída!", "Informação", MessageBoxButton.OK, MessageBoxImage.Information);
+                txtLogContainer.Visibility = Visibility.Visible;
+                btnExecutarDumps.IsEnabled = true;
+            }
+        }
 
-            // Atualiza o hyperlink (assumindo que você tem um TextBlock chamado txtLogInfo)
-            txtLogContainer.Visibility = Visibility.Visible;
-            txtLogPath.Text = _ultimoLogPath; // Mostra apenas o caminho como link
-
-            MessageBox.Show("Execução em todas as conexões finalizada!");
+        private bool ValidarExecucao(List<Conexao> conexoesSelecionadas, List<string> dumpsSelecionados)
+        {
+            if (conexoesSelecionadas.Count == 0)
+            {
+                MessageBox.Show("Selecione pelo menos uma conexão.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+            if (dumpsSelecionados.Count == 0)
+            {
+                MessageBox.Show("Selecione pelo menos um arquivo de dump.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+            return true;
         }
 
         private void EditarConexao_Click(object sender, RoutedEventArgs e)
@@ -137,14 +153,36 @@ namespace FrontPage.Pages
                     Process.Start(new ProcessStartInfo
                     {
                         FileName = _ultimoLogPath,
-                        UseShellExecute = true
+                        UseShellExecute = true // Abre com o programa padrão
                     });
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Erro ao abrir o log:\n{ex.Message}");
+                    MessageBox.Show($"Erro ao abrir o log:\n{ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
+            else
+            {
+                MessageBox.Show("Arquivo de log não encontrado.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        private void AtualizarProgresso(string conexaoNome, int atual, int total)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                txtProgressInfo.Text = $"{atual}/{total} - {conexaoNome}";
+                pbProgress.Value = atual * 100 / total;
+            });
+        }
+
+        private void AddLog(string mensagem)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                lbLog.Items.Add($"[{DateTime.Now:HH:mm:ss}] {mensagem}");
+                lbLog.ScrollIntoView(lbLog.Items[^1]); // Rola para o último item
+            });
         }
     }
 }

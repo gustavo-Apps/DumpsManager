@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using MySql.Data.MySqlClient;
+using System.ComponentModel;
 
 namespace FrontPage.Models
 {
@@ -12,7 +13,29 @@ namespace FrontPage.Models
         public string Usuario { get; set; } = string.Empty;
         public string Senha { get; set; } = string.Empty;
         public string Tipo { get; set; } = string.Empty;
+
         private bool _selecionado;
+
+        public MySqlConnection CriarConexao()
+        {
+            var builder = new MySqlConnectionStringBuilder
+            {
+                Server = Servidor,
+                Database = Banco,
+                UserID = Usuario,
+                Password = Senha,
+            };
+            if (uint.TryParse(Porta, out uint portaConvertida))
+            {
+                builder.Port = portaConvertida;
+            }
+            else
+            {
+                throw new FormatException($"Porta inválida: '{Porta}'");
+            }
+
+            return new MySqlConnection(builder.ConnectionString);
+        }
 
         public bool Selecionado
         {

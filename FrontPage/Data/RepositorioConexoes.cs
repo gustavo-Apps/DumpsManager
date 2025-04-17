@@ -200,34 +200,69 @@ namespace FrontPage.Data
 
         #endregion metodo para excluir conexao
 
-        #region metodo para executar dumps
+        //#region metodo para executar dumps
 
-        public void ExecutarDumps(IEnumerable<string> arquivos, Conexao conexao, StreamWriter logWriter)
+        //public void ExecutarDumps(IEnumerable<string> arquivos, Conexao conexao, StreamWriter logWriter)
+        //{
+        //    string connStr = $"Server={conexao.Servidor};Port={conexao.Porta};Database={conexao.Banco};Uid={conexao.Usuario};Pwd={conexao.Senha};";
+
+        // using var connection = new MySqlConnection(connStr);
+
+        // try { connection.Open();
+
+        // foreach (var caminhoArquivo in arquivos) { string nomeArquivo =
+        // Path.GetFileName(caminhoArquivo); try { string script = File.ReadAllText(caminhoArquivo);
+
+        // // Divide os comandos por ';' para executar um por um var comandos = script.Split(';', StringSplitOptions.RemoveEmptyEntries);
+
+        // foreach (var comando in comandos) { if (string.IsNullOrWhiteSpace(comando)) continue;
+
+        // using var cmd = new MySqlCommand(comando, connection); cmd.CommandTimeout = 300; // 5
+        // minutos timeout cmd.ExecuteNonQuery(); }
+
+        //                logWriter.WriteLine($"[SUCESSO] {nomeArquivo}");
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                logWriter.WriteLine($"[ERRO] {nomeArquivo} - {ex.Message}");
+        //                // Continua para o próximo arquivo
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        logWriter.WriteLine($"[Erro Conexão] {ex.Message}");
+        //        throw; // Re-lança para tratamento no chamador
+        //    }
+        //}
+
+        //#endregion metodo para executar dumps
+
+        public void ExecutarDumps(IEnumerable<string> dumps, Conexao conexao, StreamWriter logWriter, Action<string> logCallback)
         {
-            string connStr = $"Server={conexao.Servidor};Port={conexao.Porta};Database={conexao.Banco};Uid={conexao.Usuario};Pwd={conexao.Senha};";
-
-            using var connection = new MySqlConnection(connStr);
-            connection.Open();
-
-            foreach (var caminhoArquivo in arquivos)
+            foreach (var dump in dumps)
             {
-                string nomeArquivo = Path.GetFileName(caminhoArquivo);
-
                 try
                 {
-                    string script = File.ReadAllText(caminhoArquivo);
-                    using var cmd = new MySqlCommand(script, connection);
+                    string conteudo = File.ReadAllText(dump);
+                    string connStr = $"Server={conexao.Servidor};Port={conexao.Porta};Database={conexao.Banco};Uid={conexao.Usuario};Pwd={conexao.Senha};";
+                    using var connection = new MySqlConnection(connStr);
+                    connection.Open();
+
+                    using var cmd = new MySqlCommand(conteudo, connection);
                     cmd.ExecuteNonQuery();
-                    logWriter.WriteLine($"[SUCESSO] {nomeArquivo} executado");
+
+                    string msg = $"[SUCESSO] Dump '{Path.GetFileName(dump)}' executado em '{conexao.Nome}'";
+                    logWriter.WriteLine(msg);
+                    logCallback?.Invoke(msg);
                 }
                 catch (Exception ex)
                 {
-                    logWriter.WriteLine($"[ERRO] {nomeArquivo} - {ex.Message}");
-                    // Continua para o próximo arquivo
+                    string msg = $"[ERRO] Dump '{Path.GetFileName(dump)}' falhou em '{conexao.Nome}': {ex.Message}";
+                    logWriter.WriteLine(msg);
+                    logCallback?.Invoke(msg);
                 }
             }
         }
-
-        #endregion metodo para executar dumps
     }
 }

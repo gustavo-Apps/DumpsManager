@@ -27,7 +27,7 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <CheckBox IsChecked="{Binding Selecionado,  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                      HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                     Name="cbConexoes" HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -57,18 +57,33 @@
         <StackPanel Grid.Row="2">
             <TextBlock Text="Arquivos .sql" FontWeight="Bold" FontSize="16" />
             <ListBox x:Name="lbDumps" Height="120" Margin="0,5" SelectionMode="Extended" />
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,0,0">
-                <Button Content="Carregar Dumps" Click="CarregarDumps_Click" Width="120" Margin="5" />
-                <Button Content="Executar Dumps" Click="ExecutarDump_Click" Width="120" Margin="5" />
-            </StackPanel>
-        </StackPanel>
+            <DockPanel Grid.Row="2" LastChildFill="False" Margin="0,5">
+                <!-- Log (esquerda) -->
+                <TextBlock Name="txtLogContainer" DockPanel.Dock="Left" VerticalAlignment="Center" Margin="5,0" Visibility="Hidden">
+        <Hyperlink Name="lnkLogPath" Click="lnkLogPath_Click">
+            <TextBlock Name="txtLogPath" />
+        </Hyperlink>
+    </TextBlock>
+                <Grid x:Name="logProgressBar" Visibility="Hidden" MaxHeight="200" MaxWidth="350">
+                    <!-- Outros elementos da tela -->
 
-        <!-- Link para o logPah -->
-        <TextBlock Name="txtLogContainer" Margin="5" Visibility="Collapsed">
-    <Run Text="Log da execução salvo em: " />
-    <Hyperlink Name="lnkLogPath" Click="lnkLogPath_Click">
-        <Run Name="txtLogPath" />
-    </Hyperlink>
-        </TextBlock>
+                    <!-- Barra de progresso -->
+                    <ProgressBar x:Name="pbProgress" Height="20" Minimum="20" Maximum="100" Margin="10" />
+
+                    <!-- Informações de progresso -->
+                    <TextBlock  x:Name="txtProgressInfo" Margin="10,5,10,0" TextAlignment="Center" />
+
+                    <!-- Logs -->
+                    <ListBox x:Name="lbLog" Margin="10" />
+                </Grid>
+
+                <!-- Botões (direita) -->
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                    <Button Content="Carregar Dumps" Click="CarregarDumps_Click" Width="120" MaxWidth="120" MaxHeight="140" Margin="5" />
+                    <Button Name="btnExecutarDumps" Content="Executar Dumps" Click="ExecutarDump_Click" Width="120" MaxWidth="120" MaxHeight="140" Margin="5" />
+
+                </StackPanel>
+            </DockPanel>
+        </StackPanel>
     </Grid>
 </UserControl>
