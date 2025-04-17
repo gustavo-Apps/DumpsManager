@@ -200,44 +200,7 @@ namespace FrontPage.Data
 
         #endregion metodo para excluir conexao
 
-        //#region metodo para executar dumps
-
-        //public void ExecutarDumps(IEnumerable<string> arquivos, Conexao conexao, StreamWriter logWriter)
-        //{
-        //    string connStr = $"Server={conexao.Servidor};Port={conexao.Porta};Database={conexao.Banco};Uid={conexao.Usuario};Pwd={conexao.Senha};";
-
-        // using var connection = new MySqlConnection(connStr);
-
-        // try { connection.Open();
-
-        // foreach (var caminhoArquivo in arquivos) { string nomeArquivo =
-        // Path.GetFileName(caminhoArquivo); try { string script = File.ReadAllText(caminhoArquivo);
-
-        // // Divide os comandos por ';' para executar um por um var comandos = script.Split(';', StringSplitOptions.RemoveEmptyEntries);
-
-        // foreach (var comando in comandos) { if (string.IsNullOrWhiteSpace(comando)) continue;
-
-        // using var cmd = new MySqlCommand(comando, connection); cmd.CommandTimeout = 300; // 5
-        // minutos timeout cmd.ExecuteNonQuery(); }
-
-        //                logWriter.WriteLine($"[SUCESSO] {nomeArquivo}");
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                logWriter.WriteLine($"[ERRO] {nomeArquivo} - {ex.Message}");
-        //                // Continua para o próximo arquivo
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        logWriter.WriteLine($"[Erro Conexão] {ex.Message}");
-        //        throw; // Re-lança para tratamento no chamador
-        //    }
-        //}
-
-        //#endregion metodo para executar dumps
-
+        #region Metodo que Executa Dumps
         public void ExecutarDumps(IEnumerable<string> dumps, Conexao conexao, StreamWriter logWriter, Action<string> logCallback)
         {
             foreach (var dump in dumps)
@@ -264,5 +227,6 @@ namespace FrontPage.Data
                 }
             }
         }
+        #endregion Metodo que Executa Dumps
     }
 }

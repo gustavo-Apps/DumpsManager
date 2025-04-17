@@ -5,6 +5,7 @@ namespace FrontPage.Models
 {
     public class Conexao : INotifyPropertyChanged
     {
+        #region Metodos para coletar as conexoes
         public int Id { get; set; }
         public string Nome { get; set; } = string.Empty;
         public string Servidor { get; set; } = string.Empty;
@@ -16,6 +17,9 @@ namespace FrontPage.Models
 
         private bool _selecionado;
 
+        #endregion
+
+        #region Construtor para conectar-se as bases
         public MySqlConnection CriarConexao()
         {
             var builder = new MySqlConnectionStringBuilder
@@ -36,6 +40,7 @@ namespace FrontPage.Models
 
             return new MySqlConnection(builder.ConnectionString);
         }
+        #endregion
 
         public bool Selecionado
         {

@@ -18,6 +18,7 @@ namespace FrontPage.Pages
         private List<string> arquivosDumps = new();
         private readonly RepositorioConexoes repositorio = new();
 
+        #region carregar e listar conexões na page
         public ListaConexoes()
         {
             InitializeComponent();
@@ -37,6 +38,9 @@ namespace FrontPage.Pages
             dgConexoes.ItemsSource = conexoes;
         }
 
+        #endregion
+
+        #region Carregar e Executar dumps
         private void CarregarDumps_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog
@@ -101,6 +105,9 @@ namespace FrontPage.Pages
             }
         }
 
+        #endregion
+
+        #region Valida se possui Conexão e Dump selecionado
         private bool ValidarExecucao(List<Conexao> conexoesSelecionadas, List<string> dumpsSelecionados)
         {
             if (conexoesSelecionadas.Count == 0)
@@ -115,7 +122,9 @@ namespace FrontPage.Pages
             }
             return true;
         }
+        #endregion
 
+        #region Metodo para Editar a conexão com btnEditar
         private void EditarConexao_Click(object sender, RoutedEventArgs e)
         {
             if (dgConexoes.SelectedItem is Conexao conexaoSelecionada)
@@ -123,7 +132,9 @@ namespace FrontPage.Pages
                 ((MainWindow)Application.Current.MainWindow).MainContent.Content = new EditarConexoes(conexaoSelecionada);
             }
         }
+        #endregion
 
+        #region Método para Excluir Conexão
         private void ExcluirConexao_Click(object sender, RoutedEventArgs e)
         {
             if (dgConexoes.SelectedItem is Conexao conexaoSelecionada)
@@ -143,7 +154,9 @@ namespace FrontPage.Pages
                 }
             }
         }
+        #endregion
 
+        #region Métodos de Atualização de UI e Logs
         private void lnkLogPath_Click(object sender, RoutedEventArgs e)
         {
             if (!string.IsNullOrEmpty(_ultimoLogPath) && File.Exists(_ultimoLogPath))
@@ -184,5 +197,6 @@ namespace FrontPage.Pages
                 lbLog.ScrollIntoView(lbLog.Items[^1]); // Rola para o último item
             });
         }
+        #endregion
     }
 }
