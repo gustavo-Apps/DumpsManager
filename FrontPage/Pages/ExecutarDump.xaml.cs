@@ -13,11 +13,6 @@ namespace FrontPage.Pages
         private readonly string logPath;
         private readonly RepositorioConexoes repositorio = new();
 
-        public ExecutarDump()
-        {
-            InitializeComponent();
-        }
-
         public ExecutarDump(List<Conexao> conexoesSelecionadas, List<string> dumpsSelecionados)
         {
             InitializeComponent();
@@ -29,21 +24,21 @@ namespace FrontPage.Pages
 
         private async Task ExecutarDumpsAsync()
         {
-            
             using var logWriter = new StreamWriter(logPath, append: true);
-            int total = conexoes.Count;
-            int atual = 0;
+            int totalBases = conexoes.Count;
+            int baseAtual = 0;
 
             AddLog("▶️ Iniciando execução dos dumps...");
 
             foreach (var conexao in conexoes)
             {
-                atual++;
+                baseAtual++;
+
                 Dispatcher.Invoke(() =>
                 {
                     txtCurrentConnection.Text = conexao.Nome;
-                    txtProgressInfo.Text = $"{atual}/{total}";
-                    pbProgress.Value = atual * 100 / total;
+                    txtProgressInfo.Text = $"{baseAtual}/{totalBases}";
+                    pbProgress.Value = baseAtual * 100 / totalBases;
                 });
 
                 try
@@ -55,15 +50,29 @@ namespace FrontPage.Pages
 
                         foreach (var arquivo in dumps)
                         {
+                            Dispatcher.Invoke(() =>
+                            {
+                                txtArquivoAtual.Text = Path.GetFileName(arquivo);
+                            });
+
                             AddLog($"📄 Processando: {Path.GetFileName(arquivo)}");
 
                             string conteudo = File.ReadAllText(arquivo);
                             var comandos = conteudo.Split(';', StringSplitOptions.RemoveEmptyEntries);
+                            int totalComandos = comandos.Count(c => !string.IsNullOrWhiteSpace(c));
+                            int comandosExecutados = 0;
 
                             foreach (var comando in comandos)
                             {
                                 string trimmed = comando.Trim();
                                 if (string.IsNullOrWhiteSpace(trimmed)) continue;
+
+                                comandosExecutados++;
+
+                                Dispatcher.Invoke(() =>
+                                {
+                                    txtComandoCount.Text = $"{comandosExecutados}/{totalComandos}";
+                                });
 
                                 try
                                 {
@@ -73,7 +82,6 @@ namespace FrontPage.Pages
                                     string msg = $"[{conexao.Nome}] ✅ {TrimComando(trimmed)}";
                                     AddLog(msg);
                                     logWriter.WriteLine($"[{DateTime.Now:HH:mm:ss}] {msg}");
-                                    // Dispatcher.Invoke(() => this.Close());
                                 }
                                 catch (Exception ex)
                                 {
@@ -91,6 +99,7 @@ namespace FrontPage.Pages
                     logWriter.WriteLine($"[ERRO GRAVE] {ex}");
                 }
             }
+
             AddLog("🏁 Execução concluída com sucesso!");
             MessageBox.Show("Execução concluída!", "Informação", MessageBoxButton.OK, MessageBoxImage.Information);
         }
@@ -122,13 +131,20 @@ namespace FrontPage.Pages
 
         private void btnFechar_Click(object sender, RoutedEventArgs e)
         {
-
             var resultado = MessageBox.Show("Deseja realmente sair da execução?", "Confirmação", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
             if (resultado == MessageBoxResult.Yes)
             {
                 this.Close();
             }
+        }
+
+        public void Recarregar(List<Conexao> novasConexoes, List<string> novosDumps)
+        {
+            conexoes.AddRange(novasConexoes);
+            dumps.AddRange(novosDumps);
+            lbLog.Items.Clear();
+            _ = ExecutarDumpsAsync();
         }
     }
 }
