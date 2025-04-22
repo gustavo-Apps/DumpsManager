@@ -68,7 +68,6 @@ namespace FrontPage.Pages
 
                 if (!ValidarExecucao(conexoesSelecionadas, arquivos))
                     return;
-
                 string logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"dump_log_{DateTime.Now:yyyyMMdd_HHmmss}.txt");
 
                 using var logWriter = new StreamWriter(logPath, append: true);
@@ -99,7 +98,6 @@ namespace FrontPage.Pages
             }
             finally
             {
-                MessageBox.Show("Execução concluída!", "Informação", MessageBoxButton.OK, MessageBoxImage.Information);
                 txtLogContainer.Visibility = Visibility.Visible;
                 btnExecutarDumps.IsEnabled = true;
             }

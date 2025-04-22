@@ -24,9 +24,10 @@
         <GroupBox Header="Log" Grid.Row="2" Margin="0,0,0,36">
             <ListBox x:Name="lbLog" FontFamily="Consolas" FontSize="12" />
         </GroupBox>
-        <StackPanel Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Top" Margin="548,484,0,0">
-            <Button x:Name="btnParar" Content="Parar" Width="100" Margin="0,0,10,0" Click="btnParar_Click" />
-            <Button x:Name="btnFechar" Content="Fechar" Width="100" Click="btnFechar_Click" />
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal" VerticalAlignment="Bottom">
+            <Button x:Name="btnFechar" Content="Fechar" Width="100" MaxWidth="100" Margin="5" MaxHeight="140"  Click="btnFechar_Click" />
+            <Button x:Name="btnParar" Content="Parar" Width="100" MaxWidth="100" Margin="5" MaxHeight="140" Click="btnParar_Click" />
         </StackPanel>
     </Grid>
 </Window>

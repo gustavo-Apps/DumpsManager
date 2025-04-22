@@ -29,6 +29,7 @@ namespace FrontPage.Pages
 
         private async Task ExecutarDumpsAsync()
         {
+            
             using var logWriter = new StreamWriter(logPath, append: true);
             int total = conexoes.Count;
             int atual = 0;
@@ -72,7 +73,7 @@ namespace FrontPage.Pages
                                     string msg = $"[{conexao.Nome}] ✅ {TrimComando(trimmed)}";
                                     AddLog(msg);
                                     logWriter.WriteLine($"[{DateTime.Now:HH:mm:ss}] {msg}");
-                                    Dispatcher.Invoke(() => this.Close());
+                                    // Dispatcher.Invoke(() => this.Close());
                                 }
                                 catch (Exception ex)
                                 {
@@ -90,8 +91,8 @@ namespace FrontPage.Pages
                     logWriter.WriteLine($"[ERRO GRAVE] {ex}");
                 }
             }
-
             AddLog("🏁 Execução concluída com sucesso!");
+            MessageBox.Show("Execução concluída!", "Informação", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void AddLog(string mensagem)
@@ -105,7 +106,7 @@ namespace FrontPage.Pages
 
         private string TrimComando(string sql)
         {
-            return sql.Length > 30 ? sql.Substring(0, 30) + "..." : sql.Replace("\r", "").Replace("\n", " ");
+            return sql.Length > 50 ? sql.Substring(0, 50) + "..." : sql.Replace("\r", "").Replace("\n", " ");
         }
 
         private string GerarCaminhoLog()
@@ -121,11 +122,13 @@ namespace FrontPage.Pages
 
         private void btnFechar_Click(object sender, RoutedEventArgs e)
         {
-            this.Closing += (s, e) =>
+
+            var resultado = MessageBox.Show("Deseja realmente sair da execução?", "Confirmação", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (resultado == MessageBoxResult.Yes)
             {
-                e.Cancel = MessageBox.Show("Deseja sair?", "Confirmação",
-                                         MessageBoxButton.YesNo) != MessageBoxResult.Yes;
-            };
+                this.Close();
+            }
         }
     }
 }

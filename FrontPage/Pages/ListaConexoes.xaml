@@ -79,9 +79,8 @@
 
                 <!-- Botões (direita) -->
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
-                    <Button Content="Carregar Dumps" Click="CarregarDumps_Click" Width="120" MaxWidth="120" MaxHeight="140" Margin="5" />
-                    <Button Name="btnExecutarDumps" Content="Executar Dumps" Click="ExecutarDump_Click" Width="120" MaxWidth="120" MaxHeight="140" Margin="5" />
-
+                    <Button Content="Carregar Dumps" Click="CarregarDumps_Click" Width="120" MaxWidth="120" MaxHeight="40" Margin="5,5,5,10" />
+                    <Button Name="btnExecutarDumps" Content="Executar Dumps" Click="ExecutarDump_Click" Width="120" MaxWidth="120" MaxHeight="40" Margin="5,5,5,10" />
                 </StackPanel>
             </DockPanel>
         </StackPanel>
