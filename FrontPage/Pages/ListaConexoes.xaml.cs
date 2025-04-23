@@ -17,8 +17,10 @@ namespace FrontPage.Pages
         private ObservableCollection<Conexao> conexoes = new();
         private List<string> arquivosDumps = new();
         private readonly RepositorioConexoes repositorio = new();
+        private ExecutarDump executarDumpWindow;
 
         #region carregar e listar conexões na page
+
         public ListaConexoes()
         {
             InitializeComponent();
@@ -38,9 +40,10 @@ namespace FrontPage.Pages
             dgConexoes.ItemsSource = conexoes;
         }
 
-        #endregion
+        #endregion carregar e listar conexões na page
 
         #region Carregar e Executar dumps
+
         private void CarregarDumps_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog
@@ -84,6 +87,7 @@ namespace FrontPage.Pages
                         await Task.Run(() =>
                         {
                             repositorio.ExecutarDumps(arquivos, conexao, logWriter, AddLog);
+
                             // Abrir a nova janela de execução
                         });
                     }
@@ -93,8 +97,18 @@ namespace FrontPage.Pages
                         logWriter.WriteLine($"[ERRO GRAVE] {ex}");
                     }
                 }
-                var executarDumpWindow = new ExecutarDump(conexoesSelecionadas, arquivos); // Swap parameter order
-                executarDumpWindow.Show(); // Abre a janela de forma independente
+
+                // 👉 Evita janelas duplicadas
+                if (executarDumpWindow == null || !executarDumpWindow.IsLoaded)
+                {
+                    executarDumpWindow = new ExecutarDump(conexoesSelecionadas, arquivos);
+                    executarDumpWindow.Show();
+                }
+                else
+                {
+                    executarDumpWindow.Recarregar(conexoesSelecionadas, arquivos);
+                    executarDumpWindow.Focus(); // ou: executarDumpWindow.Activate();
+                }
             }
             finally
             {
@@ -103,9 +117,10 @@ namespace FrontPage.Pages
             }
         }
 
-        #endregion
+        #endregion Carregar e Executar dumps
 
         #region Valida se possui Conexão e Dump selecionado
+
         private bool ValidarExecucao(List<Conexao> conexoesSelecionadas, List<string> dumpsSelecionados)
         {
             if (conexoesSelecionadas.Count == 0)
@@ -120,9 +135,11 @@ namespace FrontPage.Pages
             }
             return true;
         }
-        #endregion
+
+        #endregion Valida se possui Conexão e Dump selecionado
 
         #region Metodo para Editar a conexão com btnEditar
+
         private void EditarConexao_Click(object sender, RoutedEventArgs e)
         {
             if (dgConexoes.SelectedItem is Conexao conexaoSelecionada)
@@ -130,9 +147,11 @@ namespace FrontPage.Pages
                 ((MainWindow)Application.Current.MainWindow).MainContent.Content = new EditarConexoes(conexaoSelecionada);
             }
         }
-        #endregion
+
+        #endregion Metodo para Editar a conexão com btnEditar
 
         #region Método para Excluir Conexão
+
         private void ExcluirConexao_Click(object sender, RoutedEventArgs e)
         {
             if (dgConexoes.SelectedItem is Conexao conexaoSelecionada)
@@ -152,9 +171,11 @@ namespace FrontPage.Pages
                 }
             }
         }
-        #endregion
+
+        #endregion Método para Excluir Conexão
 
         #region Métodos de Atualização de UI e Logs
+
         private void lnkLogPath_Click(object sender, RoutedEventArgs e)
         {
             if (!string.IsNullOrEmpty(_ultimoLogPath) && File.Exists(_ultimoLogPath))
@@ -195,6 +216,7 @@ namespace FrontPage.Pages
                 lbLog.ScrollIntoView(lbLog.Items[^1]); // Rola para o último item
             });
         }
-        #endregion
+
+        #endregion Métodos de Atualização de UI e Logs
     }
 }

@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="FrontPage.Pages.ListaConexoes"
+﻿<UserControl x:Class="FrontPage.Pages.ListaDumps"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Height="Auto" Width="Auto"
@@ -25,7 +25,7 @@
             <RowDefinition Height="200" />
         </Grid.RowDefinitions>
 
-        <TextBlock Text="Conexões Salvas" FontWeight="Bold" FontSize="16" />
+        <TextBlock Text="Dumps Gerais" FontWeight="Bold" FontSize="16" />
 
         <DataGrid x:Name="dgConexoes" Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False" Margin="0,10,0,10">
             <DataGrid.Columns>
@@ -38,21 +38,18 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-
                 <!-- Colunas de dados -->
                 <DataGridTextColumn Header="Nome" Binding="{Binding Nome}" Width="*" ElementStyle="{StaticResource CenteredCellStyle}" />
-                <DataGridTextColumn Header="Servidor" Binding="{Binding Servidor}" Width="*" ElementStyle="{StaticResource CenteredCellStyle}" />
-                <DataGridTextColumn Header="Banco" Binding="{Binding Banco}" Width="*" ElementStyle="{StaticResource CenteredCellStyle}" />
-                <DataGridTextColumn Header="Porta" Binding="{Binding Porta}" Width="*" ElementStyle="{StaticResource CenteredCellStyle}" />
-                <DataGridTextColumn Header="Tipo" Binding="{Binding Tipo}" Width="Auto" ElementStyle="{StaticResource CenteredCellStyle}" />
+                <DataGridTextColumn Header="Caminho" Binding="{Binding Caminho}" Width="*" ElementStyle="{StaticResource CenteredCellStyle}" />
+                <DataGridTextColumn Header="Sistema" Binding="{Binding Sistema}" Width="*" ElementStyle="{StaticResource CenteredCellStyle}" />
 
                 <!-- Ações -->
                 <DataGridTemplateColumn Header="Ações">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <Button Content="Editar" Click="EditarConexao_Click" Margin="2" />
-                                <Button Content="Excluir" Click="ExcluirConexao_Click" Margin="2" />
+                                <Button Content="Editar" Click="EditarCaminho_Click" Margin="2" />
+                                <Button Content="Excluir" Click="ExcluirCaminho_Click" Margin="2" />
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -60,34 +57,13 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <!-- Dumps -->
+        <!-- Grid de botões-->
         <StackPanel Grid.Row="2">
-            <TextBlock Text="Arquivos .sql" FontWeight="Bold" FontSize="16" />
-            <ListBox x:Name="lbDumps" Height="120" Margin="0,5" SelectionMode="Extended" />
             <DockPanel Grid.Row="2" LastChildFill="False" Margin="0,5">
-                <!-- Log (esquerda) -->
-                <TextBlock Name="txtLogContainer" DockPanel.Dock="Left" VerticalAlignment="Center" Margin="5,0" Visibility="Hidden">
-                 <Hyperlink Name="lnkLogPath" Click="lnkLogPath_Click">
-                      <Run x:Name="txtLogPath" Text="Log.txt" />
-                 </Hyperlink>
-                </TextBlock>
-                <Grid x:Name="logProgressBar" Visibility="Hidden" MaxHeight="200" MaxWidth="350">
-                    <!-- Outros elementos da tela -->
-
-                    <!-- Barra de progresso -->
-                    <ProgressBar x:Name="pbProgress" Height="20" Minimum="20" Maximum="100" Margin="10" />
-
-                    <!-- Informações de progresso -->
-                    <TextBlock  x:Name="txtProgressInfo" Margin="10,5,10,0" TextAlignment="Center" />
-
-                    <!-- Logs -->
-                    <ListBox x:Name="lbLog" Margin="10" />
-                </Grid>
-
                 <!-- Botões (direita) -->
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Top" DockPanel.Dock="Right">
-                    <Button Content="Carregar Dumps" Click="CarregarDumps_Click" Width="120" MaxWidth="120" Height="25" MaxHeight="40" Margin="5,5,5,20" Background="#FF64B45A" />
-                    <Button Name="btnExecutarDumps" Content="Executar Dumps" Click="ExecutarDump_Click" Width="120" MaxWidth="120" MaxHeight="40" Margin="5,5,5,20" Background="#FF5AA0D2" />
+                    <Button Content="Salvar novo" Click="SalvarNovo_Click" Width="120" MaxWidth="120" Height="25" MaxHeight="40" Margin="5,5,5,20" Background="#FF64B45A" />
+                    <Button Name="ExecDumps" Content="Exec.Dumps" Click="ListaConexoes_Click" Width="120" MaxWidth="120" MaxHeight="40" Margin="5,5,5,20" Background="#FF5AA0D2" />
                 </StackPanel>
             </DockPanel>
         </StackPanel>
