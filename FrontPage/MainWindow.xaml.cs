@@ -28,6 +28,7 @@ namespace FrontPage
         {
             // Exemplo: criar outra página depois
             MessageBox.Show("Página de dumps em construção!");
+            MainContent.Content = new ListaDumps(); // insere a tela dentro do painel da direita
         }
 
         private void BtnCadastrar_Click(object sender, RoutedEventArgs e)

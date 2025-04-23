@@ -17,7 +17,7 @@
             <TextBlock Text="Menu" Foreground="White" FontSize="18" Margin="10" />
             <Button Content="Cadastrar" Click="BtnCadastrar_Click" Margin="10" />
             <Button Content="Conexões" Click="BtnConexoes_Click" Margin="10" />
-            <Button Content="Dumps" Click="BtnDumps_Click" Margin="10" />
+            <Button Content="Dumps" Click="BtnDumps_Click" Margin="10" Visibility="Collapsed" />
         </StackPanel>
 
         <!-- Conteúdo Dinâmico -->
