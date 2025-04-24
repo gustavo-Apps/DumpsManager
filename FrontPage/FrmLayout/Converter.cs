@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Windows.Data;
 
-namespace FrontPage.Converter;
+namespace DumpManager.FrmLayout;
 
 public class Converter : IValueConverter
 {

@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace FrontPage.FrmLayout
+namespace DumpManager.FrmLayout
 {
     public static class Placeholder
     {

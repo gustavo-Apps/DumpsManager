@@ -1,4 +1,4 @@
-﻿using FrontPage.Data;
+﻿using DumpManager.Data;
 using FrontPage.Pages;
 using System.Windows;
 using System.Windows.Controls;
