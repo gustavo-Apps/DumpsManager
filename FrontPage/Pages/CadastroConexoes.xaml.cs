@@ -1,5 +1,5 @@
-﻿using FrontPage.Data;
-using FrontPage.Models;
+﻿using DumpManager.Data;
+using DumpManager.Models;
 using MySql.Data.MySqlClient;
 using System.Windows;
 using System.Windows.Controls;
@@ -37,8 +37,40 @@ namespace FrontPage.Pages
                 return;
             }
             string porta = string.IsNullOrWhiteSpace(txtPorta.Text) ? "3306" : txtPorta.Text;
-            repositorio.SalvarConexao(conexao);
-            MessageBox.Show("Conexão salva com sucesso!");
+            string connStr = $"Server={txtServidor.Text};Port={txtPorta.Text};Database={txtBanco.Text};Uid={txtUsuario.Text};Pwd={txtSenha.Password};";
+
+            try
+            {
+                using var mysqlConnection = new MySqlConnection(connStr);
+                mysqlConnection.Open();
+
+                var resultado = MessageBox.Show("Conexão bem-sucedida com o MySQL!\nDeseja salvar a conexão?",
+                    "Salvar conexão",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question);
+
+                if (resultado == MessageBoxResult.Yes)
+                {
+                    repositorio.SalvarConexao(conexao);
+                    MessageBox.Show("Conexão salva com sucesso!");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao conectar com o MySQL:\n{ex.Message}");
+                var resultado = MessageBox.Show("Não conectado ao banco!\nDeseja salvar a conexão mesmo assim?",
+                   "Salvar conexão",
+                   MessageBoxButton.YesNo,
+                   MessageBoxImage.Question);
+
+                if (resultado == MessageBoxResult.Yes)
+                {
+                    repositorio.SalvarConexao(conexao);
+                    MessageBox.Show("Conexão salva com sucesso!");
+                }
+            }
+
+            
         }
 
         public void btnTestarConexao_Click(object sender, RoutedEventArgs e)

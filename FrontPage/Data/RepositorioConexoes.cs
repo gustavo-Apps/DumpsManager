@@ -1,10 +1,10 @@
-﻿using FrontPage.Models;
+﻿using DumpManager.Models;
 using Microsoft.Data.Sqlite;
 using MySql.Data.MySqlClient;
 using System.IO;
 using System.Windows;
 
-namespace FrontPage.Data
+namespace DumpManager.Data
 {
     public class RepositorioConexoes
     {
@@ -201,6 +201,7 @@ namespace FrontPage.Data
         #endregion metodo para excluir conexao
 
         #region Metodo que Executa Dumps
+
         public void ExecutarDumps(IEnumerable<string> dumps, Conexao conexao, StreamWriter logWriter, Action<string> logCallback)
         {
             foreach (var dump in dumps)
@@ -227,6 +228,7 @@ namespace FrontPage.Data
                 }
             }
         }
+
         #endregion Metodo que Executa Dumps
     }
 }

@@ -1,5 +1,5 @@
-﻿using FrontPage.Data;
-using FrontPage.Models;
+﻿using DumpManager.Data;
+using DumpManager.Models;
 using MySql.Data.MySqlClient;
 using System.Windows;
 using System.Windows.Controls;

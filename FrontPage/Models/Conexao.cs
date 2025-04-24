@@ -1,11 +1,12 @@
 ﻿using MySql.Data.MySqlClient;
 using System.ComponentModel;
 
-namespace FrontPage.Models
+namespace DumpManager.Models
 {
     public class Conexao : INotifyPropertyChanged
     {
         #region Metodos para coletar as conexoes
+
         public int Id { get; set; }
         public string Nome { get; set; } = string.Empty;
         public string Servidor { get; set; } = string.Empty;
@@ -17,9 +18,10 @@ namespace FrontPage.Models
 
         private bool _selecionado;
 
-        #endregion
+        #endregion Metodos para coletar as conexoes
 
         #region Construtor para conectar-se as bases
+
         public MySqlConnection CriarConexao()
         {
             var builder = new MySqlConnectionStringBuilder
@@ -40,7 +42,8 @@ namespace FrontPage.Models
 
             return new MySqlConnection(builder.ConnectionString);
         }
-        #endregion
+
+        #endregion Construtor para conectar-se as bases
 
         public bool Selecionado
         {

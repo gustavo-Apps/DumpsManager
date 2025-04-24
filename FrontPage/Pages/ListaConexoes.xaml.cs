@@ -1,11 +1,9 @@
-﻿using FrontPage.Data;
-using FrontPage.Models;
+﻿using DumpManager.Data;
+using DumpManager.Models;
 using Microsoft.Win32;
-using MySql.Data.MySqlClient;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
-using System.Reflection.Metadata;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -15,9 +13,11 @@ namespace FrontPage.Pages
     {
         private string _ultimoLogPath;
         private ObservableCollection<Conexao> conexoes = new();
-        private List<string> arquivosDumps = new();
+      //  private List<string> arquivosDumps = new();
         private readonly RepositorioConexoes repositorio = new();
         private ExecutarDump executarDumpWindow;
+        private ObservableCollection<string> arquivosDumps = new ObservableCollection<string>();
+
 
         #region carregar e listar conexões na page
 
@@ -54,11 +54,13 @@ namespace FrontPage.Pages
 
             if (dialog.ShowDialog() == true)
             {
-                arquivosDumps = new List<string>(dialog.FileNames);
-                lbDumps.ItemsSource = arquivosDumps;
+                arquivosDumps.Clear(); // Limpa antes de adicionar os novos
+                foreach (var file in dialog.FileNames)
+                    arquivosDumps.Add(file);
+
+                lbDumps.ItemsSource = arquivosDumps; // Só precisa fazer isso uma vez na inicialização
             }
         }
-
         private async void ExecutarDump_Click(object sender, RoutedEventArgs e)
         {
             btnExecutarDumps.IsEnabled = false;

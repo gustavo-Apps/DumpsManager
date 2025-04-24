@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              Title="Dumps Executados"
-             mc:Ignorable="d" Height="600" Width="800">
+             mc:Ignorable="d" Height="600" Width="850">
     <Window.Background>
         <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
             <GradientStop Color="#FF1E2B3C" Offset="0" />
@@ -24,7 +24,7 @@
         <!-- Progresso -->
         <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,5">
             <TextBlock FontWeight="Bold"  Foreground="White" Text="Rodando em:" VerticalAlignment="Center" />
-            <TextBlock x:Name="txtCurrentConnection" FontWeight="Bold" Margin="5,0" VerticalAlignment="Center" />
+            <TextBlock Foreground="White" x:Name="txtCurrentConnection" FontWeight="Bold" Margin="5,0" VerticalAlignment="Center" />
             <ProgressBar x:Name="pbProgress" Width="200" Height="20" Margin="20,0" Minimum="0" Maximum="100" />
             <TextBlock  Foreground="White" x:Name="txtProgressInfo" Margin="5,0,5,0" />
             <TextBlock  Foreground="White" Text="Executando dump: " FontWeight="Bold" Margin="5,0,5,0" />
